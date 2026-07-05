@@ -1,8 +1,11 @@
 package com.meetgenie.backend.controller;
 
+import com.meetgenie.backend.dto.ApiResponse;
 import com.meetgenie.backend.dto.RegisterRequest;
 import com.meetgenie.backend.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,9 +19,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<ApiResponse> register(
+            @Valid @RequestBody RegisterRequest request) {
 
-        return userService.register(request);
+        ApiResponse response = userService.register(request);
 
+        if (response.isSuccess()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 }

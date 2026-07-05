@@ -4,6 +4,7 @@ import com.meetgenie.backend.dto.RegisterRequest;
 import com.meetgenie.backend.entity.User;
 import com.meetgenie.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import com.meetgenie.backend.dto.ApiResponse;
 
 import java.time.LocalDateTime;
 
@@ -16,10 +17,10 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public String register(RegisterRequest request) {
+    public ApiResponse register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            return "Email already exists!";
+            return new ApiResponse(false, "Email already exists!");
         }
 
         User user = new User();
@@ -32,6 +33,6 @@ public class UserService {
 
         userRepository.save(user);
 
-        return "User Registered Successfully!";
+        return new ApiResponse(true, "User registered successfully!");
     }
 }
