@@ -6,6 +6,7 @@ import com.meetgenie.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import com.meetgenie.backend.dto.ApiResponse;
 import com.meetgenie.backend.exception.EmailAlreadyExistsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 
@@ -13,9 +14,13 @@ import java.time.LocalDateTime;
 public class    UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,
+                       BCryptPasswordEncoder passwordEncoder) {
+
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public ApiResponse register(RegisterRequest request) {
@@ -28,7 +33,7 @@ public class    UserService {
 
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());   // Bcrypt in Sprint 2
+        user.setPassword(passwordEncoder.encode(request.getPassword()));   // Bcrypt in Sprint 2
         user.setRole("USER");
         user.setCreatedAt(LocalDateTime.now());
 
