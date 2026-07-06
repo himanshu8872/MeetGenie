@@ -9,6 +9,7 @@ import com.meetgenie.backend.exception.EmailAlreadyExistsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.meetgenie.backend.dto.LoginRequest;
 import com.meetgenie.backend.exception.InvalidCredentialsException;
+import com.meetgenie.backend.dto.LoginResponse;
 
 import java.time.LocalDateTime;
 
@@ -17,12 +18,15 @@ public class    UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public UserService(UserRepository userRepository,
-                       BCryptPasswordEncoder passwordEncoder) {
+                       BCryptPasswordEncoder passwordEncoder,
+                       JwtService jwtService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public ApiResponse register(RegisterRequest request) {
@@ -44,7 +48,7 @@ public class    UserService {
         return new ApiResponse(true, "User registered successfully!");
     }
 
-    public ApiResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() ->
@@ -54,7 +58,13 @@ public class    UserService {
             throw new InvalidCredentialsException("Invalid email or password");
         }
 
-        return new ApiResponse(true, "Login successful");
+        String token = jwtService.generateToken(user.getEmail());
+
+        return new LoginResponse(
+                true,
+                "Login successful",
+                token
+        );
 
     }
 }

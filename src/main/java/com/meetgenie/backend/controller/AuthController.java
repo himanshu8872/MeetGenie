@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.meetgenie.backend.dto.LoginRequest;
+import com.meetgenie.backend.dto.LoginResponse;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -31,10 +32,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse> login(
+    public ResponseEntity<LoginResponse> login(
             @Valid @RequestBody LoginRequest request) {
 
-        ApiResponse response = userService.login(request);
+        LoginResponse response = userService.login(request);
 
         return ResponseEntity.ok(response);
     }
