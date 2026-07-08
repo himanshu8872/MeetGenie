@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+import jakarta.persistence.OneToMany;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -34,6 +36,9 @@ public class User implements UserDetails {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "host")
+    private List<Meeting> meetings;
 
     @Override
     public java.util.Collection<? extends GrantedAuthority> getAuthorities() {
@@ -64,4 +69,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

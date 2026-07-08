@@ -13,7 +13,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // Secret key (We'll move this to application.properties later)
+
     private static final String SECRET_KEY =
             "meetgenie-super-secret-key-for-jwt-authentication-2026";
 
