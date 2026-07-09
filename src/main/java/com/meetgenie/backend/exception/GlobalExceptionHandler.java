@@ -33,4 +33,16 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
+    @ExceptionHandler(MeetingNotFoundException.class)
+    public ResponseEntity<ApiResponse> handleMeetingNotFound(
+            MeetingNotFoundException ex) {
+
+        ApiResponse response =
+                new ApiResponse(false, ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
+    }
+
 }
