@@ -276,4 +276,12 @@ https://github.com/himanshu8872
 
 ---
 
+## Recent Progress
+
+- ✅ JWT Authentication
+- ✅ Meeting Creation
+- ✅ Meeting Join/Leave
+- ✅ Meeting Authorization (Participants only)
+- 🚧 Sprint 4: Meeting Lifecycle Hardening
+
 ⭐ If you find this project interesting, consider giving it a Star!
