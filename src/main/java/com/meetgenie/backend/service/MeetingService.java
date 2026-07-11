@@ -18,13 +18,11 @@ import com.meetgenie.backend.entity.MeetingParticipant;
 import com.meetgenie.backend.dto.JoinMeetingRequest;
 import com.meetgenie.backend.exception.AlreadyJoinedMeetingException;
 import java.time.LocalDateTime;
-
+import com.meetgenie.backend.exception.UnauthorizedMeetingAccessException;
 import com.meetgenie.backend.dto.LeaveMeetingRequest;
 import com.meetgenie.backend.exception.ParticipantNotFoundException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.time.LocalDateTime;
+
 import java.util.UUID;
 
 @Service
@@ -85,6 +83,9 @@ public class MeetingService {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
 
+        System.out.println("Logged in user: " + authentication.getName());
+        System.out.println("Principal class: " + authentication.getPrincipal().getClass());
+
         User host = (User) authentication.getPrincipal();
 
         List<Meeting> meetings = meetingRepository.findByHost(host);
@@ -110,10 +111,22 @@ public class MeetingService {
 
     public MeetingResponse getMeetingByCode(String meetingCode) {
 
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) authentication.getPrincipal();
+
+        System.out.println("User ID: " + user.getId());
+        System.out.println("User Email: " + user.getEmail());
+
         Meeting meeting = meetingRepository
                 .findByMeetingCode(meetingCode)
                 .orElseThrow(() ->
                         new MeetingNotFoundException("Meeting not found"));
+
+        participantRepository
+                .findByMeetingAndUser(meeting, user)
+                .orElseThrow(UnauthorizedMeetingAccessException::new);
 
         return new MeetingResponse(
                 meeting.getId(),

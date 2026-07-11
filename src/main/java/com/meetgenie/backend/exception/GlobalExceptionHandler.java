@@ -64,4 +64,13 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse(false, ex.getMessage()));
     }
 
+    @ExceptionHandler(UnauthorizedMeetingAccessException.class)
+    public ResponseEntity<ApiResponse> handleUnauthorizedMeetingAccess(
+            UnauthorizedMeetingAccessException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new ApiResponse(false, ex.getMessage()));
+    }
+
 }

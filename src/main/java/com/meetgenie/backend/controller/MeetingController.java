@@ -7,10 +7,10 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import com.meetgenie.backend.dto.MeetingResponse;
 import com.meetgenie.backend.dto.JoinMeetingRequest;
-import jakarta.validation.Valid;
 import com.meetgenie.backend.dto.LeaveMeetingRequest;
-import jakarta.validation.Valid;
+
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/meetings")
@@ -54,4 +54,5 @@ public class MeetingController {
 
         return meetingService.leaveMeeting(request);
     }
+
 }
