@@ -292,4 +292,11 @@ https://github.com/himanshu8872
 - Layered architecture
 - GitHub repository setup
 
+### ✅ Sprint 2 - Meeting Foundation
+- Create Meeting API
+- Get My Meetings API
+- Get Meeting by Meeting Code
+- Meeting code generation
+- Meeting persistence
+
 ⭐ If you find this project interesting, consider giving it a Star!
