@@ -306,11 +306,4 @@ https://github.com/himanshu8872
 - Host and Participant role
 - Participant management
 
-### 🔒 Backend Hardening (In Progress)
-- Secure meeting access for authorized participants only
-- Meeting authorization using JWT
-- Host ownership preservation (planned)
-- Join policy implementation (planned)
-- Enum-based meeting state refactoring (planned)
-⭐ If you find this project interesting, consider giving it a Star!
 
