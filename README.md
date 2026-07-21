@@ -313,13 +313,5 @@ https://github.com/himanshu8872
 - Join policy implementation (planned)
 - Enum-based meeting state refactoring (planned)
 
-### 🎯 Upcoming Sprints
-- Meeting lifecycle hardening
-- Waiting room & host approval
-- AI Meeting Agents
-- Meeting recording
-- Transcript generation
-- AI summaries
-- SaaS billing & credits
-- Microservices architecture
+
 
