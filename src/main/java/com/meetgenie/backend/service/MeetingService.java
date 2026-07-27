@@ -22,11 +22,8 @@ import java.time.LocalDateTime;
 import com.meetgenie.backend.exception.UnauthorizedMeetingAccessException;
 import com.meetgenie.backend.dto.LeaveMeetingRequest;
 import com.meetgenie.backend.exception.ParticipantNotFoundException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.meetgenie.backend.exception.HostCannotLeaveMeetingException;
-
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
