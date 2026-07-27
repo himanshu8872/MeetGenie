@@ -63,7 +63,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ApiResponse(false, ex.getMessage()));
     }
-
     @ExceptionHandler(UnauthorizedMeetingAccessException.class)
     public ResponseEntity<ApiResponse> handleUnauthorizedMeetingAccess(
             UnauthorizedMeetingAccessException ex) {
@@ -71,6 +70,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(new ApiResponse(false, ex.getMessage()));
+    }
+
+    @ExceptionHandler(HostCannotLeaveMeetingException.class)
+    public ResponseEntity<ApiResponse> handleHostCannotLeaveMeeting(
+            HostCannotLeaveMeetingException ex) {
+
+        ApiResponse response = new ApiResponse(false, ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(response);
     }
 
 }

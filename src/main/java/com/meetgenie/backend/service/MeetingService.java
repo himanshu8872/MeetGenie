@@ -4,6 +4,7 @@ import com.meetgenie.backend.dto.CreateMeetingRequest;
 import com.meetgenie.backend.dto.ApiResponse;
 import com.meetgenie.backend.entity.Meeting;
 import com.meetgenie.backend.entity.User;
+import com.meetgenie.backend.exception.*;
 import com.meetgenie.backend.repository.MeetingRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,8 +22,11 @@ import java.time.LocalDateTime;
 import com.meetgenie.backend.exception.UnauthorizedMeetingAccessException;
 import com.meetgenie.backend.dto.LeaveMeetingRequest;
 import com.meetgenie.backend.exception.ParticipantNotFoundException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import com.meetgenie.backend.exception.HostCannotLeaveMeetingException;
 
-
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -83,9 +87,6 @@ public class MeetingService {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
 
-        System.out.println("Logged in user: " + authentication.getName());
-        System.out.println("Principal class: " + authentication.getPrincipal().getClass());
-
         User host = (User) authentication.getPrincipal();
 
         List<Meeting> meetings = meetingRepository.findByHost(host);
@@ -115,9 +116,6 @@ public class MeetingService {
                 SecurityContextHolder.getContext().getAuthentication();
 
         User user = (User) authentication.getPrincipal();
-
-        System.out.println("User ID: " + user.getId());
-        System.out.println("User Email: " + user.getEmail());
 
         Meeting meeting = meetingRepository
                 .findByMeetingCode(meetingCode)
@@ -179,6 +177,10 @@ public class MeetingService {
                 .findByMeetingCode(request.getMeetingCode())
                 .orElseThrow(() ->
                         new MeetingNotFoundException("Meeting not found"));
+
+        if (meeting.getHost().getId().equals(user.getId())) {
+            throw new HostCannotLeaveMeetingException();
+        }
 
         MeetingParticipant participant = participantRepository
                 .findByMeetingAndUser(meeting, user)
