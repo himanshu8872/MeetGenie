@@ -1,30 +1,19 @@
 package com.meetgenie.backend.service;
 
-import com.meetgenie.backend.dto.CreateMeetingRequest;
-import com.meetgenie.backend.dto.ApiResponse;
+import com.meetgenie.backend.dto.*;
 import com.meetgenie.backend.entity.Meeting;
+import com.meetgenie.backend.entity.MeetingParticipant;
 import com.meetgenie.backend.entity.User;
+import com.meetgenie.backend.exception.*;
+import com.meetgenie.backend.repository.MeetingParticipantRepository;
 import com.meetgenie.backend.repository.MeetingRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import com.meetgenie.backend.dto.MeetingResponse;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import com.meetgenie.backend.exception.MeetingNotFoundException;
-import com.meetgenie.backend.repository.MeetingParticipantRepository;
-import com.meetgenie.backend.entity.MeetingParticipant;
-
-import com.meetgenie.backend.dto.JoinMeetingRequest;
-import com.meetgenie.backend.exception.AlreadyJoinedMeetingException;
-import java.time.LocalDateTime;
-
-import com.meetgenie.backend.dto.LeaveMeetingRequest;
-import com.meetgenie.backend.exception.ParticipantNotFoundException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -110,10 +99,19 @@ public class MeetingService {
 
     public MeetingResponse getMeetingByCode(String meetingCode) {
 
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) authentication.getPrincipal();
+
         Meeting meeting = meetingRepository
                 .findByMeetingCode(meetingCode)
                 .orElseThrow(() ->
                         new MeetingNotFoundException("Meeting not found"));
+
+        participantRepository
+                .findByMeetingAndUser(meeting, user)
+                .orElseThrow(UnauthorizedMeetingAccessException::new);
 
         return new MeetingResponse(
                 meeting.getId(),
@@ -167,6 +165,10 @@ public class MeetingService {
                 .orElseThrow(() ->
                         new MeetingNotFoundException("Meeting not found"));
 
+        if (meeting.getHost().getId().equals(user.getId())) {
+            throw new HostCannotLeaveMeetingException();
+        }
+
         MeetingParticipant participant = participantRepository
                 .findByMeetingAndUser(meeting, user)
                 .orElseThrow(ParticipantNotFoundException::new);
@@ -174,6 +176,32 @@ public class MeetingService {
         participantRepository.delete(participant);
 
         return new ApiResponse(true, "Left meeting successfully.");
+    }
+
+    public ApiResponse deleteMeeting(DeleteMeetingRequest request) {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) authentication.getPrincipal();
+
+        Meeting meeting = meetingRepository
+                .findByMeetingCode(request.getMeetingCode())
+                .orElseThrow(() ->
+                        new MeetingNotFoundException("Meeting not found"));
+
+        if (!meeting.getHost().getId().equals(user.getId())) {
+            throw new OnlyHostCanDeleteMeetingException();
+        }
+
+        participantRepository.deleteAllByMeeting(meeting);
+
+        meetingRepository.delete(meeting);
+
+        return new ApiResponse(
+                true,
+                "Meeting deleted successfully."
+        );
     }
 
 }

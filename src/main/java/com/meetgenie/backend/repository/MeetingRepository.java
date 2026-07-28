@@ -13,4 +13,6 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
     Optional<Meeting> findByMeetingCode(String meetingCode);
 
+
+
 }
