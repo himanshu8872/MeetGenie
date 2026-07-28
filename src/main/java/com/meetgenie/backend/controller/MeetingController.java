@@ -2,15 +2,16 @@ package com.meetgenie.backend.controller;
 
 import com.meetgenie.backend.dto.ApiResponse;
 import com.meetgenie.backend.dto.CreateMeetingRequest;
-import com.meetgenie.backend.service.MeetingService;
-import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
-import com.meetgenie.backend.dto.MeetingResponse;
+import com.meetgenie.backend.dto.DeleteMeetingRequest;
 import com.meetgenie.backend.dto.JoinMeetingRequest;
 import com.meetgenie.backend.dto.LeaveMeetingRequest;
+import com.meetgenie.backend.dto.MeetingResponse;
+import com.meetgenie.backend.service.MeetingService;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/api/meetings")
@@ -55,4 +56,11 @@ public class MeetingController {
         return meetingService.leaveMeeting(request);
     }
 
+    @DeleteMapping
+    @Transactional
+    public ApiResponse deleteMeeting(
+            @Valid @RequestBody DeleteMeetingRequest request) {
+
+        return meetingService.deleteMeeting(request);
+    }
 }
