@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StartMeetingRequest {
+public class EndMeetingRequest {
 
     @NotBlank(message = "Meeting code is required")
     private String meetingCode;

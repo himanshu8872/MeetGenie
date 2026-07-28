@@ -10,7 +10,7 @@ import com.meetgenie.backend.repository.MeetingRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
+import com.meetgenie.backend.dto.StartMeetingRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -201,6 +201,76 @@ public class MeetingService {
         return new ApiResponse(
                 true,
                 "Meeting deleted successfully."
+        );
+    }
+
+    public ApiResponse startMeeting(StartMeetingRequest request) {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) authentication.getPrincipal();
+
+        Meeting meeting = meetingRepository
+                .findByMeetingCode(request.getMeetingCode())
+                .orElseThrow(() ->
+                        new MeetingNotFoundException("Meeting not found"));
+
+        if (!meeting.getHost().getId().equals(user.getId())) {
+            throw new UnauthorizedMeetingAccessException();
+        }
+
+        if ("LIVE".equals(meeting.getStatus())) {
+            throw new MeetingAlreadyStartedException();
+        }
+
+        if ("ENDED".equals(meeting.getStatus())) {
+            throw new MeetingAlreadyEndedException();
+        }
+
+        meeting.setStatus("LIVE");
+        meeting.setStartedAt(LocalDateTime.now());
+
+        meetingRepository.save(meeting);
+
+        return new ApiResponse(
+                true,
+                "Meeting started successfully."
+        );
+    }
+
+    public ApiResponse endMeeting(EndMeetingRequest request) {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) authentication.getPrincipal();
+
+        Meeting meeting = meetingRepository
+                .findByMeetingCode(request.getMeetingCode())
+                .orElseThrow(() ->
+                        new MeetingNotFoundException("Meeting not found"));
+
+        if (!meeting.getHost().getId().equals(user.getId())) {
+            throw new UnauthorizedMeetingAccessException();
+        }
+
+        if ("SCHEDULED".equals(meeting.getStatus())) {
+            throw new MeetingNotStartedException();
+        }
+
+        if ("ENDED".equals(meeting.getStatus())) {
+            throw new MeetingAlreadyEndedException();
+        }
+
+        meeting.setStatus("ENDED");
+        meeting.setEndedAt(LocalDateTime.now());
+
+        meetingRepository.save(meeting);
+
+        return new ApiResponse(
+                true,
+                "Meeting ended successfully."
         );
     }
 
