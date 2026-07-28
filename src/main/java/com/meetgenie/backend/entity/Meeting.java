@@ -23,6 +23,10 @@ public class Meeting {
 
     private LocalDateTime createdAt;
 
+    private LocalDateTime startedAt;
+
+    private LocalDateTime endedAt;
+
     private String status;
 
     @ManyToOne
@@ -84,4 +88,19 @@ public class Meeting {
         this.host = host;
     }
 
+    public LocalDateTime getStartedAt() {
+        return startedAt;
+    }
+
+    public void setStartedAt(LocalDateTime startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public LocalDateTime getEndedAt() {
+        return endedAt;
+    }
+
+    public void setEndedAt(LocalDateTime endedAt) {
+        this.endedAt = endedAt;
+    }
 }

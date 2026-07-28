@@ -42,7 +42,7 @@ public class MeetingService {
         meeting.setTitle(request.getTitle());
         meeting.setDescription(request.getDescription());
         meeting.setCreatedAt(LocalDateTime.now());
-        meeting.setStatus("ACTIVE");
+        meeting.setStatus("SCHEDULED");
 
         String meetingCode = UUID.randomUUID()
                 .toString()
