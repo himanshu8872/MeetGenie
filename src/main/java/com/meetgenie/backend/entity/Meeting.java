@@ -1,7 +1,8 @@
 package com.meetgenie.backend.entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -27,7 +28,8 @@ public class Meeting {
 
     private LocalDateTime endedAt;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private MeetingStatus status;
 
     @ManyToOne
     @JoinColumn(name = "host_id")
@@ -72,11 +74,11 @@ public class Meeting {
         this.createdAt = createdAt;
     }
 
-    public String getStatus() {
+    public MeetingStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(MeetingStatus status) {
         this.status = status;
     }
 

@@ -83,19 +83,6 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
-    @ExceptionHandler(OnlyHostCanDeleteMeetingException.class)
-    public ResponseEntity<ApiResponse> handleOnlyHostCanDeleteMeeting(
-            OnlyHostCanDeleteMeetingException ex) {
-
-        ApiResponse response = new ApiResponse(
-                false,
-                ex.getMessage()
-        );
-
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(response);
-    }
 
     @ExceptionHandler(MeetingAlreadyStartedException.class)
     public ResponseEntity<ApiResponse> handleMeetingAlreadyStarted(
