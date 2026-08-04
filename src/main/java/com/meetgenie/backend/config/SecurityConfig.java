@@ -1,3 +1,4 @@
+
 package com.meetgenie.backend.config;
 
 import org.springframework.context.annotation.Bean;
@@ -40,11 +41,16 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/",
+                                "/websocket-test.html",
+                                "/ws",
+                                "/ws/**",
                                 "/api/auth/**",
-                                "/swagger-ui/**",
                                 "/v3/api-docs/**",
+                                "/swagger-ui/**",
                                 "/swagger-ui.html"
-                        ).permitAll()
+                        )
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
