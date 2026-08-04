@@ -1,10 +1,10 @@
 # 🚀 MeetGenie
 
-> AI-Powered Meeting Platform built with Spring Boot, Spring Security, PostgreSQL, and JWT Authentication.
+> AI-Powered Meeting Platform built with **Spring Boot, Spring Security, JWT, PostgreSQL, WebSockets, and STOMP Messaging**.
 
-MeetGenie is a full-stack meeting platform currently under active development. The goal of this project is to build a production-grade application that enables secure online meetings with AI-powered features such as meeting summaries, searchable transcripts, emotion analysis, and custom AI meeting agents.
+MeetGenie is a production-oriented full-stack meeting platform currently under active development. The project focuses on building scalable backend architecture while integrating AI-powered meeting capabilities such as meeting summaries, searchable transcripts, custom AI meeting agents, and real-time collaboration.
 
-This repository currently contains the complete authentication module developed using Spring Boot and Spring Security.
+The backend is being developed incrementally using industry-standard software engineering practices, including layered architecture, clean code principles, secure authentication, RESTful APIs, and real-time communication.
 
 ---
 
@@ -12,49 +12,168 @@ This repository currently contains the complete authentication module developed 
 
 ## 🔐 Authentication & Security
 
-- User Registration API
-- User Login API
-- JWT-based Authentication
-- BCrypt Password Hashing
-- Protected REST Endpoints
+- User Registration
+- User Login
+- JWT Authentication
 - Stateless Authentication
+- BCrypt Password Encryption
+- Protected REST APIs
 - Spring Security Integration
-
----
-
-## 🏗 Backend Architecture
-
-- Layered Architecture
-    - Controller
-    - Service
-    - Repository
-- DTO Pattern
-- Dependency Injection
-- Spring Data JPA
-- Hibernate ORM
 - Global Exception Handling
 - Request Validation
 
 ---
 
-## 🗄 Database
+## 📅 Meeting Management
 
-- PostgreSQL
-- User Entity
-- Automatic Table Creation using Hibernate
-- Secure Password Storage (BCrypt)
+### Meeting APIs
+
+- Create Meeting
+- Get My Meetings
+- Get Meeting by Code
+- Delete Meeting
+
+### Participant APIs
+
+- Join Meeting
+- Leave Meeting
+
+### Meeting Lifecycle APIs
+
+- Start Meeting
+- End Meeting
 
 ---
 
-## 📄 API Documentation
+## 🔒 Business Rules Implemented
 
-Interactive API documentation is available using **Swagger/OpenAPI**.
+The backend enforces production-style business validations instead of simple CRUD operations.
 
-Current APIs:
+- Only the meeting host can start a meeting
+- Only the meeting host can end a meeting
+- Only the meeting host can delete a meeting
+- Hosts cannot leave their own meetings
+- Duplicate meeting joins are prevented
+- Meetings cannot be started twice
+- Meetings cannot be ended before they are started
+- JWT-secured meeting operations
+- Participant authorization checks
 
-- POST `/api/auth/register`
-- POST `/api/auth/login`
-- GET `/api/test`
+---
+
+## ⚡ Real-Time Communication
+
+Implemented using Spring WebSocket and STOMP.
+
+Current capabilities include:
+
+- WebSocket Configuration
+- STOMP Messaging
+- Topic-based Publish/Subscribe
+- SockJS Fallback Support
+- Real-time Message Broadcasting
+
+This serves as the foundation for upcoming video conferencing and WebRTC signaling.
+
+---
+
+# 🏗 Backend Architecture
+
+Designed using production-oriented layered architecture.
+
+```
+Controller
+      │
+      ▼
+Service
+      │
+      ▼
+Repository
+      │
+      ▼
+PostgreSQL
+```
+
+### Design Patterns
+
+- Layered Architecture
+- DTO Pattern
+- Dependency Injection
+- Repository Pattern
+- Service Layer Abstraction
+- Enum-based State Management
+- Global Exception Handling
+
+---
+
+# 🗄 Database
+
+Database: PostgreSQL
+
+Current Entities
+
+- User
+- Meeting
+- MeetingParticipant
+
+Features
+
+- Hibernate ORM
+- Spring Data JPA
+- Automatic Schema Generation
+- BCrypt Password Storage
+- Entity Relationships
+
+---
+
+# 📄 REST APIs
+
+## Authentication
+
+| Method | Endpoint |
+|---------|----------|
+| POST | `/api/auth/register` |
+| POST | `/api/auth/login` |
+
+---
+
+## Meeting Management
+
+| Method | Endpoint |
+|---------|----------|
+| POST | `/api/meetings` |
+| GET | `/api/meetings` |
+| GET | `/api/meetings/{meetingCode}` |
+| DELETE | `/api/meetings` |
+
+---
+
+## Meeting Lifecycle
+
+| Method | Endpoint |
+|---------|----------|
+| POST | `/api/meetings/join` |
+| POST | `/api/meetings/leave` |
+| POST | `/api/meetings/start` |
+| POST | `/api/meetings/end` |
+
+---
+
+## Test Endpoint
+
+| Method | Endpoint |
+|---------|----------|
+| GET | `/api/test` |
+
+---
+
+# ⚡ WebSocket Endpoints
+
+| Endpoint | Purpose |
+|----------|---------|
+| `/ws` | WebSocket Handshake |
+| `/app/chat` | Client Message Destination |
+| `/topic/messages` | Broadcast Topic |
 
 ---
 
@@ -65,13 +184,16 @@ Current APIs:
 | Java 21 | Programming Language |
 | Spring Boot | Backend Framework |
 | Spring Security | Authentication & Authorization |
+| Spring WebSocket | Real-time Communication |
+| STOMP | Messaging Protocol |
+| SockJS | WebSocket Fallback |
 | Spring Data JPA | Database Access |
 | Hibernate | ORM |
-| PostgreSQL | Relational Database |
-| JWT | Stateless Authentication |
+| PostgreSQL | Database |
+| JWT | Authentication |
 | BCrypt | Password Encryption |
 | Maven | Dependency Management |
-| Swagger/OpenAPI | API Documentation |
+| Swagger / OpenAPI | API Documentation |
 | Postman | API Testing |
 | Git & GitHub | Version Control |
 
@@ -82,94 +204,220 @@ Current APIs:
 ```
 src
 └── main
-    └── java
-        └── com.meetgenie.backend
-            ├── config
-            ├── controller
-            ├── dto
-            ├── entity
-            ├── exception
-            ├── repository
-            ├── security
-            ├── service
-            └── BackendApplication
+    ├── java
+    │   └── com.meetgenie.backend
+    │       ├── config
+    │       ├── controller
+    │       ├── dto
+    │       ├── entity
+    │       ├── exception
+    │       ├── repository
+    │       ├── security
+    │       ├── service
+    │       └── BackendApplication
+    │
+    └── resources
+        ├── static
+        └── application.properties
 ```
 
 ---
 
-# 🔄 Authentication Flow
+# 🔐 Authentication Flow
 
 ```
 Client
-   │
-   ▼
+
+      │
+
 Login Request
-   │
-   ▼
+
+      │
+
 AuthenticationManager
-   │
-   ▼
+
+      │
+
 Spring Security
-   │
-   ▼
+
+      │
+
 CustomUserDetailsService
-   │
-   ▼
+
+      │
+
 PostgreSQL
-   │
-   ▼
+
+      │
+
 JWT Generated
-   │
-   ▼
-Client Stores JWT
-   │
-   ▼
-Protected API Request
-   │
-   ▼
+
+      │
+
+Client Stores Token
+
+      │
+
+Protected Request
+
+      │
+
 JWT Filter
-   │
-   ▼
-Token Validation
-   │
-   ▼
+
+      │
+
 Authenticated Response
 ```
 
 ---
 
-# 🚧 Roadmap
+# ⚡ WebSocket Messaging Flow
 
-## ✅ Phase 1 (Completed)
+```
+Browser
 
-- Authentication Module
+      │
+
+WebSocket Connection
+
+      │
+
+SockJS
+
+      │
+
+STOMP
+
+      │
+
+/app/chat
+
+      │
+
+@MessageMapping
+
+      │
+
+Spring Message Broker
+
+      │
+
+/topic/messages
+
+      │
+
+All Connected Clients
+```
+
+---
+
+# 🚀 Development Progress
+
+## ✅ Sprint 0
+
+- Spring Boot Setup
+- PostgreSQL Configuration
+- Layered Architecture
+- GitHub Repository
+
+---
+
+## ✅ Sprint 1
+
+Authentication Module
+
 - JWT Authentication
 - Spring Security
-- BCrypt Password Hashing
+- BCrypt
 - Swagger Documentation
+- Protected APIs
 
 ---
 
-## 🔄 Phase 2 (In Progress)
+## ✅ Sprint 2
 
-- Meeting Entity
-- Create Meeting API
-- Join Meeting API
-- My Meetings API
-- Delete Meeting API
+Meeting Management
+
+- Create Meeting
+- Get My Meetings
+- Meeting Code Generation
+- Meeting Lookup
 
 ---
 
-## 🔜 Upcoming Features
+## ✅ Sprint 3
 
-- Video Conferencing
+Participant Management
+
+- Join Meeting
+- Leave Meeting
+- MeetingParticipant Entity
+- Participant Authorization
+
+---
+
+## ✅ Sprint 4
+
+Meeting Lifecycle
+
+- Start Meeting
+- End Meeting
+- Delete Meeting
+- Meeting State Management
+- Authorization Rules
+- Backend Refactoring
+- Enum-based Status
+- Code Cleanup
+
+---
+
+## 🚧 Sprint 5 (Current)
+
+Real-Time Communication
+
+Completed
+
+- WebSocket Configuration
+- STOMP Messaging
+- Publish / Subscribe Messaging
+- SockJS Integration
+
+In Progress
+
+- Meeting Rooms
+- User Presence
+- Join / Leave Notifications
+- WebRTC Signaling
+
+---
+
+# 🔜 Upcoming Features
+
+## 🎥 Real-Time Meetings
+
+- Meeting Rooms
+- User Presence
+- WebRTC Signaling
+- Video Calling
+
+---
+
+## 🤖 AI Features
+
 - AI Meeting Summaries
 - Searchable Meeting Transcripts
-- Custom AI Meeting Agents
-- Emotion Analysis
-- Meeting Recordings
-- Role-Based Access Control (RBAC)
-- Cloud Deployment (AWS)
+- AI Meeting Agent
+- Action Item Extraction
+- Speaker Identification
+
+---
+
+## ☁ Deployment
+
+- Docker
+- AWS
+- CI/CD
+- Production Logging
 
 ---
 
@@ -181,25 +429,21 @@ Authenticated Response
 git clone https://github.com/himanshu8872/MeetGenie.git
 ```
 
----
-
 ## Navigate
 
 ```bash
 cd MeetGenie
 ```
 
----
-
 ## Configure PostgreSQL
 
-Update:
+Update
 
 ```
 src/main/resources/application.properties
 ```
 
-Example:
+Example
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/meetgenie
@@ -207,25 +451,23 @@ spring.datasource.username=postgres
 spring.datasource.password=YOUR_PASSWORD
 ```
 
----
-
 ## Run
+
+Windows
+
+```bash
+.\mvnw spring-boot:run
+```
+
+Linux / macOS
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-or
-
-```bash
-mvn spring-boot:run
-```
-
 ---
 
 # 📖 API Documentation
-
-After running the project:
 
 Swagger UI
 
@@ -235,28 +477,33 @@ http://localhost:8080/swagger-ui/index.html
 
 ---
 
-# 📸 Current Screenshots
+# 📸 Current Project Screenshots
 
+- JWT Authentication
 - Swagger API Documentation
-- JWT Login API
-- Protected Endpoint Authentication
+- Meeting Management APIs
+- Meeting Lifecycle APIs
 - PostgreSQL Database
-- Layered Project Architecture
+- WebSocket STOMP Messaging
+- Project Architecture
 
 ---
 
-# 🎯 Learning Objectives
+# 🎯 Learning Goals
 
-This project is being developed to gain hands-on experience with:
+This project is being built to gain hands-on experience with:
 
 - Spring Boot
 - Spring Security
 - JWT Authentication
-- Production-grade Backend Development
+- WebSockets
+- STOMP Messaging
+- WebRTC
 - REST API Design
 - PostgreSQL
 - Software Architecture
-- Clean Code Principles
+- Clean Code
+- Production Backend Development
 
 ---
 
@@ -266,52 +513,18 @@ This project is being developed to gain hands-on experience with:
 
 B.Tech Computer Engineering
 
-Passionate about Java Backend Development, Spring Boot, and building scalable backend systems.
+Aspiring Java Backend Developer passionate about building scalable backend systems, real-time applications, and AI-powered software.
 
-LinkedIn:
+### Connect with me
+
+**LinkedIn**
+
 https://www.linkedin.com/in/himanshu-mahajan-6bba49324/
 
-GitHub:
+**GitHub**
+
 https://github.com/himanshu8872
 
 ---
 
-## Recent Progress
-
-- ✅ JWT Authentication
-- ✅ Meeting Creation
-- ✅ Meeting Join/Leave
-- ✅ Meeting Authorization (Participants only)
-- 🚧 Sprint 4: Meeting Lifecycle Hardening
-
-## 🚀 Development Progress
-
-### ✅ Sprint 0 - Project Setup
-- Spring Boot project initialization
-- PostgreSQL configuration
-- Layered architecture
-- GitHub repository setup
-
-### ✅ Sprint 2 - Meeting Foundation
-- Create Meeting API
-- Get My Meetings API
-- Get Meeting by Meeting Code
-- Meeting code generation
-- Meeting persistence
-
-### ✅ Sprint 3 - Meeting Lifecycle Foundation
-- Join Meeting API
-- Leave Meeting API
-- MeetingParticipant entity
-- Host and Participant role
-- Participant management
-
-### 🔒 Backend Hardening (In Progress)
-- Secure meeting access for authorized participants only
-- Meeting authorization using JWT
-- Host ownership preservation (planned)
-- Join policy implementation (planned)
-- Enum-based meeting state refactoring (planned)
-
-
-
+⭐ If you found this project interesting, consider giving it a star!
