@@ -1,11 +1,6 @@
 package com.meetgenie.backend.controller;
 
-import com.meetgenie.backend.dto.ApiResponse;
-import com.meetgenie.backend.dto.CreateMeetingRequest;
-import com.meetgenie.backend.dto.DeleteMeetingRequest;
-import com.meetgenie.backend.dto.JoinMeetingRequest;
-import com.meetgenie.backend.dto.LeaveMeetingRequest;
-import com.meetgenie.backend.dto.MeetingResponse;
+import com.meetgenie.backend.dto.*;
 import com.meetgenie.backend.service.MeetingService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -62,5 +57,19 @@ public class MeetingController {
             @Valid @RequestBody DeleteMeetingRequest request) {
 
         return meetingService.deleteMeeting(request);
+    }
+
+    @PostMapping("/start")
+    public ApiResponse startMeeting(
+            @Valid @RequestBody StartMeetingRequest request) {
+
+        return meetingService.startMeeting(request);
+    }
+
+    @PostMapping("/end")
+    public ApiResponse endMeeting(
+            @Valid @RequestBody EndMeetingRequest request) {
+
+        return meetingService.endMeeting(request);
     }
 }
